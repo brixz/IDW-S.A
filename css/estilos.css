@@ -34,17 +34,42 @@ body {
     text-align: center;
   }
   
-  .destacados ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .destacados li {
-    background: #fff;
-    padding: 10px;
-    margin: 5px 0;
-    border-left: 5px solid #4CAF50;
-  }
+.destacados, .destacados2, .destacados3, .destacados4 {
+  background: #fff;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-left: 5px solid #4CAF50;
+  border-radius: 5px;
+}
+
+.destacados ol,
+.destacados2 ol,
+.destacados3 ol,
+.destacados4 ol {
+  list-style: none;
+  padding: 50;
+  margin: 50;
+}
+
+.destacados li,
+.destacados2 li,
+.destacados3 li,
+.destacados4 li {
+  margin-bottom: 20px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.destacados img,
+.destacados2 img,
+.destacados3 img,
+.destacados4 img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
   
   form input, form textarea {
     width: 100%;
