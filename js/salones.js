@@ -30,8 +30,8 @@ function renderizarTabla() {
         <td data-label="Dirección">${salon.direccion}</td>
         <td data-label="Capacidad">${salon.capacidad}</td>
         <td data-label="Acciones">
-            <button onclick="editarSalon(${index})">Editar</button>
-            <button onclick="eliminarSalon(${index})">Eliminar</button>
+            <button class="btn btn-success btn-sm me-1" onclick="editarSalon(${index})">Editar</button>
+            <button class="btn btn-danger btn-sm" onclick="eliminarSalon(${index})">Eliminar</button>
         </td>
         `;
     tbody.appendChild(fila);
