@@ -1,82 +1,80 @@
-const SALONES_INIT = [
-
-];
-
-const STORAGE_KEY = "salones_eventos";
-
-function inicializarStorage() {
-  if (!localStorage.getItem(STORAGE_KEY)) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(SALONES_INIT));
-  }
-}
-
-function obtenerSalones() {
-  return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-}
-
-function guardarSalones(salones) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(salones));
-}
-
-function renderizarTabla() {
-  const salones = obtenerSalones();
-  const tbody = document.querySelector("#tablaSalones tbody");
-  tbody.innerHTML = "";
-
-  salones.forEach((salon, index) => {
-    const fila = document.createElement("tr");
-    fila.innerHTML = `
-        <td data-label="Nombre">${salon.nombre}</td>
-        <td data-label="Dirección">${salon.direccion}</td>
-        <td data-label="Capacidad">${salon.capacidad}</td>
-        <td data-label="Acciones">
-            <button class="btn btn-success btn-sm me-1" onclick="editarSalon(${index})">Editar</button>
-            <button class="btn btn-danger btn-sm" onclick="eliminarSalon(${index})">Eliminar</button>
-        </td>
-        `;
-    tbody.appendChild(fila);
-  });
-}
-
-window.editarSalon = (index) => {
-  const salones = obtenerSalones();
-  const salon = salones[index];
-  document.querySelector("#nombre").value = salon.nombre;
-  document.querySelector("#direccion").value = salon.direccion;
-  document.querySelector("#capacidad").value = salon.capacidad;
-  document.querySelector("#salonForm").dataset.editIndex = index;
-};
-
-window.eliminarSalon = (index) => {
-  const salones = obtenerSalones();
-  salones.splice(index, 1);
-  guardarSalones(salones);
-  renderizarTabla();
-};
-
 document.addEventListener("DOMContentLoaded", () => {
-  inicializarStorage();
-  renderizarTabla();
+  const form = document.getElementById("salonForm");
+  const titulo = document.getElementById("titulo");
+  const descripcion = document.getElementById("descripcion");
+  const direccion = document.getElementById("direccion");
+  const valor = document.getElementById("valor");
+  const estado = document.getElementById("estado");
+  const idInput = document.getElementById("salonId");
+  const imagen = document.getElementById("imagen");
+  const tabla = document.getElementById("tablaSalones").querySelector("tbody");
 
-  document.querySelector("#salonForm").addEventListener("submit", (e) => {
+  let salones = JSON.parse(localStorage.getItem("salones")) || [];
+
+  function renderTabla() {
+    tabla.innerHTML = "";
+    salones.forEach(salon => {
+      const fila = document.createElement("tr");
+      fila.innerHTML = `
+        <td>${salon.titulo}</td>
+        <td>${salon.direccion}</td>
+        <td>$${salon.valor}</td>
+        <td>${salon.estado}</td>
+        <td>
+          <button class="btn btn-sm btn-warning me-2" onclick="editarSalon(${salon.id})">Editar</button>
+          <button class="btn btn-sm btn-danger" onclick="eliminarSalon(${salon.id})">Eliminar</button>
+        </td>
+      `;
+      tabla.appendChild(fila);
+    });
+  }
+
+  form.addEventListener("submit", e => {
     e.preventDefault();
-    const nombre = document.querySelector("#nombre").value.trim();
-    const direccion = document.querySelector("#direccion").value.trim();
-    const capacidad = parseInt(document.querySelector("#capacidad").value);
-    const salones = obtenerSalones();
-    const index = e.target.dataset.editIndex;
+    const id = idInput.value ? parseInt(idInput.value) : Date.now();
+    const nuevoSalon = {
+      id,
+      titulo: titulo.value,
+      descripcion: descripcion.value,
+      direccion: direccion.value,
+      valor: parseFloat(valor.value),
+      estado: estado.value,
+      imagen: imagen.value
+    };
 
-    const nuevoSalon = { nombre, direccion, capacidad };
-
-    if (index !== undefined) {
+    const index = salones.findIndex(s => s.id === id);
+    if (index >= 0) {
       salones[index] = nuevoSalon;
-      delete e.target.dataset.editIndex;
     } else {
       salones.push(nuevoSalon);
     }
 
-    guardarSalones(salones);
-    renderizarTabla();
-    e.target.reset();
+    localStorage.setItem("salones", JSON.stringify(salones));
+    form.reset();
+    idInput.value = "";
+    renderTabla();
   });
+
+  window.editarSalon = id => {
+    const salon = salones.find(s => s.id === id);
+    if (salon) {
+      idInput.value = salon.id;
+      titulo.value = salon.titulo;
+      descripcion.value = salon.descripcion;
+      direccion.value = salon.direccion;
+      valor.value = salon.valor;
+      estado.value = salon.estado;
+      imagen.value = salon.imagen || "";
+    }
+  };
+
+  window.eliminarSalon = id => {
+    if (confirm("¿Estás seguro de eliminar este salón?")) {
+      salones = salones.filter(s => s.id !== id);
+      localStorage.setItem("salones", JSON.stringify(salones));
+      renderTabla();
+    }
+  };
+
+  renderTabla();
 });
