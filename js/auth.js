@@ -1,14 +1,29 @@
-document.getElementById('loginForm')
-  .addEventListener('submit', e => {
+document.getElementById('loginForm').addEventListener('submit', async function(e){
     e.preventDefault();
 
-    const username = document.getElementById('user').value.trim();
-    const password = document.getElementById('pass').value.trim();
+    const username = document.getElementById('user').value;
+    const password = document.getElementById('pass').value;
+   
+    const res = await fetch('https://dummyjson.com/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password })
+    });
 
-    if (username === 'user' && password === 'pass') {
-      sessionStorage.setItem('accessToken', 'fake-token');
-      window.location.href = 'admin_users.html';
-    } else {
-      alert('Credenciales inválidas');
-    }
-  });
+    const data = await res.json();
+
+  if (res.ok) {
+     sessionStorage.setItem('accessToken', data.token);
+     window.location.href = 'admin_users.html';
+  } else {
+     alert('Credenciales inválidas');
+    // document.getElementById('mensaje').textContent = 'Credenciales incorrectas';
+  }
+});
+  //   if (username === 'user' && password === 'pass') {
+  //     sessionStorage.setItem('accessToken', 'fake-token');
+  //     window.location.href = 'admin_users.html';
+  //   } else {
+  //     alert('Credenciales inválidas');
+  //   }
+  // });
