@@ -1,3 +1,8 @@
+// bloquea acceso
+if (!sessionStorage.getItem('accessToken')) {
+  window.location.href = 'login.html';
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("salonForm");
   const titulo = document.getElementById("titulo");
@@ -41,39 +46,30 @@ document.addEventListener("DOMContentLoaded", () => {
       estado: estado.value,
       imagen: imagen.value
     };
-
-    const index = salones.findIndex(s => s.id === id);
-    if (index >= 0) {
-      salones[index] = nuevoSalon;
-    } else {
-      salones.push(nuevoSalon);
-    }
-
+    const idx = salones.findIndex(s => s.id === id);
+    if (idx >= 0) salones[idx] = nuevoSalon; else salones.push(nuevoSalon);
     localStorage.setItem("salones", JSON.stringify(salones));
-    form.reset();
-    idInput.value = "";
+    form.reset(); idInput.value = "";
     renderTabla();
   });
 
   window.editarSalon = id => {
-    const salon = salones.find(s => s.id === id);
-    if (salon) {
-      idInput.value = salon.id;
-      titulo.value = salon.titulo;
-      descripcion.value = salon.descripcion;
-      direccion.value = salon.direccion;
-      valor.value = salon.valor;
-      estado.value = salon.estado;
-      imagen.value = salon.imagen || "";
-    }
+    const s = salones.find(x => x.id === id);
+    if (!s) return;
+    idInput.value = s.id;
+    titulo.value = s.titulo;
+    descripcion.value = s.descripcion;
+    direccion.value = s.direccion;
+    valor.value = s.valor;
+    estado.value = s.estado;
+    imagen.value = s.imagen;
   };
 
   window.eliminarSalon = id => {
-    if (confirm("¿Estás seguro de eliminar este salón?")) {
-      salones = salones.filter(s => s.id !== id);
-      localStorage.setItem("salones", JSON.stringify(salones));
-      renderTabla();
-    }
+    if (!confirm("¿Eliminar este salón?")) return;
+    salones = salones.filter(x => x.id !== id);
+    localStorage.setItem("salones", JSON.stringify(salones));
+    renderTabla();
   };
 
   renderTabla();

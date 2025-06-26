@@ -1,3 +1,7 @@
+if (!sessionStorage.getItem('accessToken')) {
+  window.location.href = 'login.html';
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("presupuestoForm");
   const nombre = document.getElementById("nombre");
@@ -15,84 +19,74 @@ document.addEventListener("DOMContentLoaded", () => {
   function cargarSalones() {
     salonSelect.innerHTML = '<option value="">Seleccionar...</option>';
     salones.forEach(s => {
-      const option = document.createElement("option");
-      option.value = s.nombre || s.titulo;
-      option.textContent = s.nombre || s.titulo;
-      salonSelect.appendChild(option);
+      const o = document.createElement("option");
+      o.value = s.titulo; o.textContent = s.titulo;
+      salonSelect.appendChild(o);
     });
   }
 
   function cargarServicios() {
     listaServicios.innerHTML = "";
     servicios.forEach(s => {
-      const checkbox = document.createElement("div");
-      checkbox.classList.add("form-check");
-      checkbox.innerHTML = `
-        <input class="form-check-input" type="checkbox" id="serv-${s.id}" value="${s.id}" data-valor="${s.valor}">
-        <label class="form-check-label" for="serv-${s.id}">${s.descripcion} ($${s.valor})</label>
-      `;
-      listaServicios.appendChild(checkbox);
+      const div = document.createElement("div");
+      div.className = "form-check";
+      div.innerHTML = `
+        <input class="form-check-input" type="checkbox"
+               id="serv-${s.id}" value="${s.id}" data-valor="${s.valor}">
+        <label class="form-check-label" for="serv-${s.id}">
+          ${s.descripcion} ($${s.valor})
+        </label>`;
+      listaServicios.appendChild(div);
     });
   }
 
   function calcularTotal() {
-  let total = 0;
-
-  // Sumar valor de los servicios seleccionados
-  const seleccionados = listaServicios.querySelectorAll("input:checked");
-  seleccionados.forEach(s => {
-    total += parseFloat(s.dataset.valor);
-  });
-
-  // Sumar valor del salón seleccionado
-  const salonSeleccionado = salones.find(s => s.nombre === salonSelect.value || s.titulo === salonSelect.value);
-  if (salonSeleccionado) {
-    total += parseFloat(salonSeleccionado.valor);
+    let total = 0;
+    listaServicios.querySelectorAll("input:checked")
+      .forEach(i => total += +i.dataset.valor);
+    const sel = salones.find(x => x.titulo === salonSelect.value);
+    if (sel) total += +sel.valor;
+    totalSpan.textContent = total.toFixed(2);
+    return total;
   }
-
-  totalSpan.textContent = total.toFixed(2);
-  return total;
-}
-
 
   listaServicios.addEventListener("change", calcularTotal);
 
   function renderPresupuestos() {
     tabla.innerHTML = "";
     presupuestos.forEach(p => {
-      const fila = document.createElement("tr");
-      fila.innerHTML = `
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
         <td>${p.nombre}</td>
         <td>${p.fecha}</td>
         <td>${p.tematica}</td>
         <td>${p.salon}</td>
         <td>${p.servicios.map(id => {
-          const serv = servicios.find(s => s.id === id);
-          return serv ? serv.descripcion : "";
+          const s = servicios.find(x=>x.id===id);
+          return s? s.descripcion : "";
         }).join(", ")}</td>
-        <td>$${p.total}</td>
-      `;
-      tabla.appendChild(fila);
+        <td>$${p.total}</td>`;
+      tabla.appendChild(tr);
     });
   }
 
   form.addEventListener("submit", e => {
     e.preventDefault();
     const total = calcularTotal();
-    const serviciosSeleccionados = Array.from(listaServicios.querySelectorAll("input:checked")).map(c => parseInt(c.value));
-    const nuevoPresupuesto = {
+    const servSel = Array.from(
+      listaServicios.querySelectorAll("input:checked")
+    ).map(i=>+i.value);
+    presupuestos.push({
       id: Date.now(),
       nombre: nombre.value,
       fecha: fecha.value,
       tematica: tematica.value,
       salon: salonSelect.value,
-      servicios: serviciosSeleccionados,
+      servicios: servSel,
       total
-    };
-    presupuestos.push(nuevoPresupuesto);
+    });
     localStorage.setItem("presupuestos", JSON.stringify(presupuestos));
-    form.reset();
-    totalSpan.textContent = 0;
+    form.reset(); totalSpan.textContent = "0.00";
     renderPresupuestos();
   });
 
@@ -100,4 +94,3 @@ document.addEventListener("DOMContentLoaded", () => {
   cargarServicios();
   renderPresupuestos();
 });
-

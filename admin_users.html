@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panel Usuarios</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"
+        rel="stylesheet" crossorigin="anonymous">
+  <link rel="stylesheet" href="css/estilos.css" />
+</head>
+<body class="d-flex flex-column min-vh-100">
+  <header class="bg-success text-white py-3 text-center">
+    <h1>Usuarios</h1>
+    <nav class="nav justify-content-center">
+      <a href="administrar_salones.html" class="nav-link text-white">Salones</a>
+      <a href="servicios.html" class="nav-link text-white">Servicios</a>
+      <a href="presupuestos.html" class="nav-link text-white">Presupuestos</a>
+      <button id="logoutBtn" class="btn btn-sm btn-danger ms-3">Salir</button>
+    </nav>
+  </header>
+  <main class="container my-5 flex-grow-1">
+    <h2>Gestión de Usuarios</h2>
+    <form id="userForm" class="row g-3 mb-4">
+      <input type="hidden" id="userId" />
+      <div class="col-md-4">
+        <label class="form-label">Nombre</label>
+        <input type="text" id="firstName" class="form-control" required />
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Apellido</label>
+        <input type="text" id="lastName" class="form-control" required />
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Edad</label>
+        <input type="number" id="age" class="form-control" required />
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Email</label>
+        <input type="email" id="email" class="form-control" required />
+      </div>
+      <div class="col-md-6 d-grid">
+        <button type="submit" class="btn btn-success">Guardar Usuario</button>
+      </div>
+    </form>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>ID</th><th>Nombre</th>
+          <th>Apellido</th>
+          <th>Edad</th>
+          <th>Email</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="usersTbody"></tbody>
+    </table>
+  </main>
+  <footer class="bg-dark text-white text-center py-3 mt-auto">
+    <p>&copy; 2025 IDW S.A</p>
+  </footer>
+  <script src="js/admin_users.js"></script>
+</body>
+</html>
