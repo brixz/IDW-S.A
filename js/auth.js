@@ -14,7 +14,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
 
   if (res.ok) {
      sessionStorage.setItem('accessToken', data.token);
-     window.location.href = 'admin_users.html';
+     window.location.href = 'index.html';
   } else {
      alert('Credenciales inválidas');
     // document.getElementById('mensaje').textContent = 'Credenciales incorrectas';

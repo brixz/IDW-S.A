@@ -9,6 +9,33 @@ document.addEventListener("DOMContentLoaded", () => {
   const idInput = document.getElementById("servicioId");
   const tabla = document.getElementById("tablaServicios").querySelector("tbody");
   let servicios = JSON.parse(localStorage.getItem("servicios")) || [];
+  const adminSalones = document.getElementById("adminSalones");
+  const adminUsers = document.getElementById("adminUsers");
+  const login = document.getElementById("login");
+  const logout = document.getElementById("logoutBtn");
+  const adminServicios = document.getElementById("adminServicios");
+  
+
+  if (sessionStorage.getItem('accessToken')) {
+    adminSalones.classList.remove("d-none");
+    adminServicios.classList.remove("d-none");
+    adminUsers.classList.remove("d-none");
+    logout.classList.remove("d-none");
+    login.classList.add("d-none");
+  } else {
+    adminSalones.classList.add("d-none");
+    adminServicios.classList.add("d-none");
+    adminUsers.classList.add("d-none");
+    login.classList.remove("d-none");
+    logout.classList.add("d-none");
+  }
+
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  sessionStorage.removeItem('accessToken');
+  setTimeout(() => {
+    window.location.href = 'login.html';
+  }, 100);
+});
 
   function renderTabla() {
     tabla.innerHTML = "";

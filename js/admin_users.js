@@ -1,7 +1,33 @@
 if (!sessionStorage.getItem('accessToken')) {
   window.location.href = 'login.html';
 }
+const adminSalones = document.getElementById("adminSalones");
+  const adminUsers = document.getElementById("adminUsers");
+  const login = document.getElementById("login");
+  const logout = document.getElementById("logoutBtn");
+  const adminServicios = document.getElementById("adminServicios");
+  
 
+  if (sessionStorage.getItem('accessToken')) {
+    adminSalones.classList.remove("d-none");
+    adminServicios.classList.remove("d-none");
+    adminUsers.classList.remove("d-none");
+    logout.classList.remove("d-none");
+    login.classList.add("d-none");
+  } else {
+    adminSalones.classList.add("d-none");
+    adminServicios.classList.add("d-none");
+    adminUsers.classList.add("d-none");
+    login.classList.remove("d-none");
+    logout.classList.add("d-none");
+  }
+
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  sessionStorage.removeItem('accessToken');
+  setTimeout(() => {
+    window.location.href = 'login.html';
+  }, 100);
+});
 const API = 'https://dummyjson.com/users';
 const tbody = document.getElementById('usersTbody');
 let users = [];

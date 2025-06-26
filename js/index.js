@@ -1,7 +1,33 @@
 document.addEventListener("DOMContentLoaded", () => {
   const contenedor = document.getElementById("salonesContainer");
   const salones = JSON.parse(localStorage.getItem("salones")) || [];
+  const adminSalones = document.getElementById("adminSalones");
+  const adminUsers = document.getElementById("adminUsers");
+  const login = document.getElementById("login");
+  const logout = document.getElementById("logoutBtn");
+  const adminServicios = document.getElementById("adminServicios");
+  
 
+  if (sessionStorage.getItem('accessToken')) {
+    adminSalones.classList.remove("d-none");
+    adminServicios.classList.remove("d-none");
+    adminUsers.classList.remove("d-none");
+    logout.classList.remove("d-none");
+    login.classList.add("d-none");
+  } else {
+    adminSalones.classList.add("d-none");
+    adminServicios.classList.add("d-none");
+    adminUsers.classList.add("d-none");
+    login.classList.remove("d-none");
+    logout.classList.add("d-none");
+  }
+
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  sessionStorage.removeItem('accessToken');
+  setTimeout(() => {
+    window.location.href = 'login.html';
+  }, 100);
+});
   if (salones.length === 0) {
     contenedor.innerHTML = `<p class="text-center">No hay salones cargados aún.</p>`;
     return;
